@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
-* Студент: [Павел Фазлиев](https://up.htmlacademy.ru/javascript/24/user/1311329).
-* Наставник: `Неизвестно`.
+* Студент: [Павел Фазлиев](https://https://htmlacademy.ru/profile/meow_or).
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
