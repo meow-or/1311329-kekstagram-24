@@ -12,7 +12,7 @@ const getRandomNumber = function (initialNumber, finiteNumber) {
   if (finiteNumber < initialNumber) {
     // если конец < начала - меняем их местами (не указано, что именно нужно придумать, поэтому я придумал поменять их местами.)
 
-    let box = initialNumber;
+    const box = initialNumber;
     initialNumber = finiteNumber;
     finiteNumber = box;
   }
@@ -21,7 +21,7 @@ const getRandomNumber = function (initialNumber, finiteNumber) {
   finiteNumber = Math.floor(finiteNumber);
 
   return (Math.floor(Math.random() * (finiteNumber - initialNumber + 1)) + initialNumber);
-}
+};
 
 getRandomNumber(200, 15);
 
@@ -32,10 +32,6 @@ const checkCommentLength = function(comment, maxLength) {
     return true;
   }
   return false;
-}
+};
 
 checkCommentLength('Функция для проверки максимальной длины строки', 140);
-
-
-
-
