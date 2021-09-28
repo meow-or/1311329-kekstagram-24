@@ -21,4 +21,5 @@ const checkCommentLength = function (comment, maxLength) {
   return comment.length <= maxLength;
 };
 
-checkCommentLength('Функция для проверки максимальной длины строки', 140);
+checkCommentLength('Функция для проверки максимальной длины строки", 140');
+
