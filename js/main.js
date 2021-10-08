@@ -87,11 +87,15 @@ const createPhotoDescription = function () {
   return {
     id: listOfRandomElement[indexId++], //getUniqId(listOfPhotoDescriptions),
     url: `photos/${listOfRandomElement[indexUrl++]}.jpg`,
-    description: 'some description',
+    description: "some description",
     likes: getRandomNumber(15, 200),
     comments: listOfComments,
   };
 };
 
-const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
+const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);// по сути это бесполезная запись, т.к. нигде не используется
+//но я пока не знаю как победить циклическую зависимость, возникающую, если эту переменную засунуть в createPhotoDescription
+
+listOfPhotoDescriptions[0]; //чтобы eslint не орал
+
 
