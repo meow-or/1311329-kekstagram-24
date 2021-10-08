@@ -73,9 +73,6 @@ const createComment = function () {
 
 const listOfComments = Array.from({ length: commentsCount }, createComment);
 
-console.log(listOfComments);
-
-
 // const getUniqId = function (arr) {
 //   let newId = getRandomNumber(1, 25);
 
@@ -90,14 +87,11 @@ const createPhotoDescription = function () {
   return {
     id: listOfRandomElement[indexId++], //getUniqId(listOfPhotoDescriptions),
     url: `photos/${listOfRandomElement[indexUrl++]}.jpg`,
-    description: "some description",
+    description: 'some description',
     likes: getRandomNumber(15, 200),
     comments: listOfComments,
   };
 };
 
 const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
-
-console.log(listOfPhotoDescriptions);
-
 
