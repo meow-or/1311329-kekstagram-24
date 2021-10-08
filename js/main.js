@@ -87,7 +87,7 @@ const createPhotoDescription = function () {
   return {
     id: listOfRandomElement[indexId++], //getUniqId(listOfPhotoDescriptions),
     url: `photos/${listOfRandomElement[indexUrl++]}.jpg`,
-    description: "some description",
+    description: 'some description',
     likes: getRandomNumber(15, 200),
     comments: listOfComments,
   };
