@@ -23,26 +23,26 @@ const checkCommentLength = function (comment, maxLength) {
 
 checkCommentLength('Функция для проверки максимальной длины строки", 140');
 
-const generateArrayRandomNumber = function (min, max) {
-  let totalNumbers = max - min + 1;
-  const arrayTotalNumbers = [];
-  const arrayRandomNumbers = [];
-  let tempRandomNumber;
 
-  while(totalNumbers--) {
-    arrayTotalNumbers.push(totalNumbers + min);
-  }
+const createRandomIdFromRange = function (min, max) {
+  const previousValues = [];
 
-  while (arrayTotalNumbers.length) {
-    tempRandomNumber = Math.round(Math.random() * (arrayTotalNumbers.length - 1));
-    arrayRandomNumbers.push(arrayTotalNumbers[tempRandomNumber]);
-    arrayTotalNumbers.splice(tempRandomNumber, 1);
-  }
+  return function () {
+    let currentValue = getRandomNumber(min, max);
 
-  return arrayRandomNumbers;
+    if (previousValues.length >= (max - min + 1)) {
+      throw new Error(`Перебраны все числа из диапазона от ${min} до ${max}`);
+    }
+
+    while (previousValues.includes(currentValue)) {
+      currentValue = getRandomNumber(min, max);
+    }
+
+    previousValues.push(currentValue);
+
+    return currentValue;
+  };
 };
-
-const listOfRandomElement = generateArrayRandomNumber(1, 25);
 
 const COMMENTS = [
   'Всё отлично!',
@@ -56,15 +56,11 @@ const COMMENTS = [
 const NAMES = ['Фёдор', 'Ольга', 'Николай', 'Евгений', 'Мария', 'Анна'];
 const commentsCount = getRandomNumber(1, 5);
 const DESCRIPTIONS_COUNT = 25;
-//let idCounter = 1;
-//let photoCounter = 1;
-let indexId = 0;
-let indexUrl = 0;
-let indexComment = 0;
+const generateCommentId = createRandomIdFromRange(1, 999);
 
 const createComment = function () {
   return {
-    id: listOfRandomElement[indexComment++],
+    id: generateCommentId(),
     avatar: `img/avatar-${getRandomNumber(1, 6)}.svg`,
     message: COMMENTS[getRandomNumber(0, 5)],
     name: NAMES[getRandomNumber(0, 6)],
@@ -73,29 +69,20 @@ const createComment = function () {
 
 const listOfComments = Array.from({ length: commentsCount }, createComment);
 
-// const getUniqId = function (arr) {
-//   let newId = getRandomNumber(1, 25);
-
-//   while (arr.find({id}) === newId) {
-//     newId = getRandomNumber(1, 25);
-//   }
-
-//   return newId;
-// };
+const generateId = createRandomIdFromRange(1, 25);
+const generatePhotoId = createRandomIdFromRange(1, 25);
 
 const createPhotoDescription = function () {
   return {
-    id: listOfRandomElement[indexId++], //getUniqId(listOfPhotoDescriptions),
-    url: `photos/${listOfRandomElement[indexUrl++]}.jpg`,
+    id: generateId(),
+    url: `photos/${generatePhotoId()}.jpg`,
     description: 'some description',
     likes: getRandomNumber(15, 200),
     comments: listOfComments,
   };
 };
 
-const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);// по сути это бесполезная запись, т.к. нигде не используется
-//но я пока не знаю как победить циклическую зависимость, возникающую, если эту переменную засунуть в createPhotoDescription
+const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
 
-listOfPhotoDescriptions[0]; //чтобы eslint не орал
-
+listOfPhotoDescriptions[0]; //vs eslint
 
