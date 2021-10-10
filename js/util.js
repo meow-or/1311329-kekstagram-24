@@ -4,7 +4,7 @@ const generateRandomNumber = function (init, fin) {
 
 const getRandomNumber = function (minNumber, maxNumber) {
   if (minNumber < 0 || maxNumber < 0) {
-    throw new Error("начало или конец диапазона не могут быть отрицательными");
+    throw new Error('начало или конец диапазона не могут быть отрицательными');
   }
 
   const min = Math.ceil(minNumber);
@@ -19,7 +19,7 @@ const checkCommentLength = function (comment, maxLength) {
   return comment.length <= maxLength;
 };
 
-//checkCommentLength('Функция для проверки максимальной длины строки", 140');
+checkCommentLength('Функция для проверки максимальной длины строки", 140');
 
 const createRandomIdFromRange = function (min, max) {
   const previousValues = [];
