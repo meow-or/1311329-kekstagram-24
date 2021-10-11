@@ -1,50 +1,24 @@
+import { getRandomNumber, createRandomIdFromRange } from './utils.js';
 
-const generateRandomNumber = function (init, fin) {
-  return Math.floor(Math.random() * (fin - init + 1)) + init;
-};
+const DESCRIPTIONS_COUNT = 25;
+const MIN_COMMENTS_COUNT = 1;
+const MAX_COMMENTS_COUNT = 5;
+const MIN_AVATARS_COUNT = 1;
+const MAX_AVATARS_COUNT = 6;
+const MIN_SENTENCES_COUNT = 0;
+const MAX_SENTENCES_COUNT = 5;
+const MIN_NAMES_COUNT = 0;
+const MAX_NAMES_COUNT = 5;
+const MIN_COMMENT_ID = 1;
+const MAX_COMMENT_ID = 999;
+const MIN_DESCRIPTION_ID = 1;
+const MAX_DESCRIPTION_ID = 25;
+const MIN_PHOTO_NUMBER = 1;
+const MAX_PHOTO_NUMBER = 25;
+const MIN_LIKES_COUNT = 15;
+const MAX_LIKES_COUNT = 200;
 
-const getRandomNumber = function (minNumber, maxNumber) {
-  if (minNumber < 0 || maxNumber < 0) {
-    throw new Error('начало или конец диапазона не могут быть отрицательными');
-  }
-
-  const min = Math.ceil(minNumber);
-  const max = Math.floor(maxNumber);
-
-  return min > max
-    ? generateRandomNumber(max, min)
-    : generateRandomNumber(min, max);
-};
-
-
-const checkCommentLength = function (comment, maxLength) {
-  return comment.length <= maxLength;
-};
-
-checkCommentLength('Функция для проверки максимальной длины строки", 140');
-
-
-const createRandomIdFromRange = function (min, max) {
-  const previousValues = [];
-
-  return function () {
-    let currentValue = getRandomNumber(min, max);
-
-    if (previousValues.length >= (max - min + 1)) {
-      throw new Error(`Перебраны все числа из диапазона от ${min} до ${max}`);
-    }
-
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomNumber(min, max);
-    }
-
-    previousValues.push(currentValue);
-
-    return currentValue;
-  };
-};
-
-const COMMENTS = [
+const comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -52,37 +26,34 @@ const COMMENTS = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
+const names = ['Фёдор', 'Ольга', 'Николай', 'Евгений', 'Мария', 'Анна'];
 
-const NAMES = ['Фёдор', 'Ольга', 'Николай', 'Евгений', 'Мария', 'Анна'];
-const commentsCount = getRandomNumber(1, 5);
-const DESCRIPTIONS_COUNT = 25;
-const generateCommentId = createRandomIdFromRange(1, 999);
+const generateCommentId = createRandomIdFromRange( MIN_COMMENT_ID, MAX_COMMENT_ID );
+const generateId = createRandomIdFromRange( MIN_DESCRIPTION_ID, MAX_DESCRIPTION_ID );
+const generatePhotoId = createRandomIdFromRange( MIN_PHOTO_NUMBER, MAX_PHOTO_NUMBER );
+const commentsCount = getRandomNumber(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT);
 
 const createComment = function () {
   return {
     id: generateCommentId(),
-    avatar: `img/avatar-${getRandomNumber(1, 6)}.svg`,
-    message: COMMENTS[getRandomNumber(0, 5)],
-    name: NAMES[getRandomNumber(0, 6)],
+    avatar: `img/avatar-${getRandomNumber( MIN_AVATARS_COUNT, MAX_AVATARS_COUNT )}.svg`,
+    message: comments[getRandomNumber( MIN_SENTENCES_COUNT, MAX_SENTENCES_COUNT )],
+    name: names[getRandomNumber( MIN_NAMES_COUNT, MAX_NAMES_COUNT )],
   };
 };
 
 const listOfComments = Array.from({ length: commentsCount }, createComment);
-
-const generateId = createRandomIdFromRange(1, 25);
-const generatePhotoId = createRandomIdFromRange(1, 25);
 
 const createPhotoDescription = function () {
   return {
     id: generateId(),
     url: `photos/${generatePhotoId()}.jpg`,
     description: 'some description',
-    likes: getRandomNumber(15, 200),
+    likes: getRandomNumber(MIN_LIKES_COUNT, MAX_LIKES_COUNT),
     comments: listOfComments,
   };
 };
 
 const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
 
-listOfPhotoDescriptions[0]; //vs eslint
-
+listOfPhotoDescriptions;
