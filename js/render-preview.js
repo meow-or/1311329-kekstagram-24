@@ -1,7 +1,7 @@
 import { listOfPhotoDescriptions } from './data.js';
 
 const previewTemplate = document.querySelector('#picture').content
-.querySelector('.picture');
+  .querySelector('.picture');
 
 const previewsContainer = document.querySelector('.pictures');
 
