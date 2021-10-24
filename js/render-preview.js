@@ -18,3 +18,5 @@ listOfPhotoDescriptions.forEach(({url, likes, comments}) => {
 });
 
 previewsContainer.appendChild(listOfPreviewsFragment);
+
+export { previewsContainer };

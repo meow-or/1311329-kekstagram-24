@@ -28,6 +28,34 @@ const comments = [
 ];
 const names = ['Фёдор', 'Ольга', 'Николай', 'Евгений', 'Мария', 'Анна'];
 
+// const descriptions = [
+//   'Совсем как на курорте',
+//   'Дорога к морю',
+//   'Голубая лагуна',
+//   'И фото и модель',
+//   'Что-то',
+//   'Это потому что я чёрный',
+//   'Клубника',
+//   'Виноградный день',
+//   'Разворачивайтесь, глупцы',
+//   'Функционально',
+//   'Местный СНТ',
+//   'Сколько колёс, столько и колец',
+//   'Некоторый ужин',
+//   'Суши-кот',
+//   'Лень скафандр снимать',
+//   'Над горами',
+//   'Музыка нас связала',
+//   'Ретро как стиль жизни',
+//   'Обувь ночного видения',
+//   'Пальмы подпирают вечернее небо',
+//   'Вилка и лайм',
+//   'На закате',
+//   'Пальма не моя, мне подбросили',
+//   'Думаете это Rammstein?',
+//   'Her sir, would you give me a ride?',
+// ];
+
 const generateCommentId = createRandomIdFromRange(
   MIN_COMMENT_ID,
   MAX_COMMENT_ID,
@@ -40,6 +68,8 @@ const generatePhotoId = createRandomIdFromRange(
   MIN_PHOTO_NUMBER,
   MAX_PHOTO_NUMBER,
 );
+
+
 const commentsCount = getRandomNumber(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT);
 
 const createComment = function () {
@@ -70,4 +100,4 @@ const createPhotoDescription = function () {
 
 const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
 
-export { listOfPhotoDescriptions };
+export { listOfPhotoDescriptions, listOfComments };
