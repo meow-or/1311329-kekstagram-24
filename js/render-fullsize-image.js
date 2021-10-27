@@ -29,6 +29,7 @@ listOfAddedPreviews.forEach((preview) => {
 
     document.addEventListener('keydown', (evt) => {
       if(evt.key === 'Escape') {
+        evt.preventDefault();
         fullSizePhotoContainer.classList.add('hidden');
         body.classList.remove('modal-open');
       }
