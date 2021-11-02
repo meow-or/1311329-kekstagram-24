@@ -1,4 +1,4 @@
-import { isEscapeKey } from "./utils.js";
+import { isEscapeKey } from './utils.js';
 
 const MAX_COMMENT_LENGTH = 140;
 const MAX_NUMBER_OF_HASHTAGS = 5;
@@ -19,16 +19,16 @@ const effectLevelSlider = document.querySelector('.effect-level__slider');
 const imgUploadBaseClass = 'img-upload__preview';
 const effectLevelFieldset = document.querySelector('.effect-level');
 
-  noUiSlider.create(effectLevelSlider, {
-    start: 100,
-    tooltips: [true],
-    connect: [true, false],
-    step: 1,
-    range: {
-      'min': 0,
-      'max': 100
-    }
-  });
+noUiSlider.create(effectLevelSlider, {
+  start: 100,
+  tooltips: [true],
+  connect: [true, false],
+  step: 1,
+  range: {
+    'min': 0,
+    'max': 100,
+  },
+});
 
 const imgFilter = {
   none: () => {
@@ -36,27 +36,27 @@ const imgFilter = {
 
   },
   chrome: () => {
-      effectLevelSlider.noUiSlider.on('update', () => {
-        effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-        imgUploadPreview.style.filter = `grayscale(${0.01 * effectLevelValue.value})`;
+    effectLevelSlider.noUiSlider.on('update', () => {
+      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+      imgUploadPreview.style.filter = `grayscale(${0.01 * effectLevelValue.value})`;
     });
   },
   sepia: () => {
-      effectLevelSlider.noUiSlider.on('update', () => {
-        effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-        imgUploadPreview.style.filter = `sepia(${0.01 * effectLevelValue.value})`;
+    effectLevelSlider.noUiSlider.on('update', () => {
+      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+      imgUploadPreview.style.filter = `sepia(${0.01 * effectLevelValue.value})`;
     });
   },
   marvin: () => {
-      effectLevelSlider.noUiSlider.on('update', () => {
-        effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-        imgUploadPreview.style.filter = `invert(${effectLevelValue.value}%)`;
-    })
+    effectLevelSlider.noUiSlider.on('update', () => {
+      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+      imgUploadPreview.style.filter = `invert(${effectLevelValue.value}%)`;
+    });
   },
   phobos: () => {
-      effectLevelSlider.noUiSlider.on('update', () => {
-        effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-        imgUploadPreview.style.filter = `blur(${0.03 * effectLevelValue.value}px)`;
+    effectLevelSlider.noUiSlider.on('update', () => {
+      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+      imgUploadPreview.style.filter = `blur(${0.03 * effectLevelValue.value}px)`;
     });
   },
   heat: () => {
@@ -64,8 +64,8 @@ const imgFilter = {
       effectLevelValue.value = effectLevelSlider.noUiSlider.get();
       imgUploadPreview.style.filter = `brightness(${0.03 * effectLevelValue.value})`;
     });
-  }
-}
+  },
+};
 
 const onImgEditFormEscKeydown = (evt) => {
 
@@ -79,44 +79,44 @@ const onImgEditFormEscKeydown = (evt) => {
   }
 };
 
-  const addFilter = function(evt) {
-    imgUploadPreview.removeAttribute('class');
-    imgUploadPreview.classList.add(imgUploadBaseClass);
-    imgUploadPreview.classList.add(`effects__preview--${evt.target.value}`);
-    effectLevelSlider.noUiSlider.set([100]);
-    imgFilter[evt.target.value]();
-  }
+const addFilter = function(evt) {
+  imgUploadPreview.removeAttribute('class');
+  imgUploadPreview.classList.add(imgUploadBaseClass);
+  imgUploadPreview.classList.add(`effects__preview--${evt.target.value}`);
+  effectLevelSlider.noUiSlider.set([100]);
+  imgFilter[evt.target.value]();
+};
 
-  // const removeFilter = function(evt) {
-  //   imgUploadPreview.classList.remove(`effects__preview--${evt.target.value}`);
-  // }
+// const removeFilter = function(evt) {
+//   imgUploadPreview.classList.remove(`effects__preview--${evt.target.value}`);
+// }
 
 let scaleCounter = 100;
 
 const scaleCountUp = function () {
-    scaleCounter += 25;
+  scaleCounter += 25;
 
-    if(scaleCounter >= 100) {
-      scaleCounter = 100;
-      imgUploadPreview.style.transform = 'scale(1)';
-      scaleControlInputValue.value = '100%'
-    } else if (scaleCounter < 100) {
-      scaleControlInputValue.value = `${scaleCounter}%`;
-      imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
-    }
+  if(scaleCounter >= 100) {
+    scaleCounter = 100;
+    imgUploadPreview.style.transform = 'scale(1)';
+    scaleControlInputValue.value = '100%';
+  } else if (scaleCounter < 100) {
+    scaleControlInputValue.value = `${scaleCounter}%`;
+    imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
   }
+};
 
-  const scaleCountDown = function () {
-    scaleCounter -= 25;
+const scaleCountDown = function () {
+  scaleCounter -= 25;
 
-      if(scaleCounter <= 25) {
-        scaleCounter = 25;
-        imgUploadPreview.style.transform = 'scale(.25)';
-        scaleControlInputValue.value = '25%'
-      }
-      scaleControlInputValue.value = `${scaleCounter}%`;
-      imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
+  if(scaleCounter <= 25) {
+    scaleCounter = 25;
+    imgUploadPreview.style.transform = 'scale(.25)';
+    scaleControlInputValue.value = '25%';
   }
+  scaleControlInputValue.value = `${scaleCounter}%`;
+  imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
+};
 
 const openImgEditForm = function() {
   imgEditForm.classList.remove('hidden');
@@ -137,8 +137,8 @@ const openImgEditForm = function() {
       }
       addFilter(evt);
     });
-  })
-}
+  });
+};
 
 
 const closeImgEditForm = function() {
@@ -159,7 +159,7 @@ const closeImgEditForm = function() {
 
   form.reset();
   effectLevelSlider.noUiSlider.set([100]);
-}
+};
 
 uploadFileInput.addEventListener('change', () => {
   openImgEditForm();
@@ -175,13 +175,13 @@ hashtagsInput.addEventListener('input', () => {
 
   const isHashtahRight = function(hashtag) {
     return re.test(hashtag) === true;
-  }
+  };
 
   const isHashtagUniq = (arr) => {
     const set = new Set();
     for (const item of arr) {
-      if (set.has(item)) return false;
-        set.add(item);
+      if (set.has(item)) {return false;}
+      set.add(item);
     }
     return true;
   };
@@ -191,11 +191,11 @@ hashtagsInput.addEventListener('input', () => {
   } else if (listOfhashtags.length > MAX_NUMBER_OF_HASHTAGS) {
     hashtagsInput.setCustomValidity(`Можно добавить не более 5 хэштегов, удалите лишние ${ listOfhashtags.length - MAX_NUMBER_OF_HASHTAGS }`);
   } else if (!isHashtagUniq(listOfhashtags)) {
-    hashtagsInput.setCustomValidity(`Хэштеги не должны повторяться`);
+    hashtagsInput.setCustomValidity('Хэштеги не должны повторяться');
   } else if (listOfhashtags.every(isHashtahRight) && listOfhashtags.length <= MAX_NUMBER_OF_HASHTAGS) {
     hashtagsInput.setCustomValidity('');
   }
-    hashtagsInput.reportValidity();
+  hashtagsInput.reportValidity();
 });
 
 
@@ -212,6 +212,5 @@ commentTextarea.addEventListener('input', () => {
 closeEditFormButton.addEventListener('click', () => {
   closeImgEditForm();
 });
-
 
 
