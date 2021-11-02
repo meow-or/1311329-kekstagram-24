@@ -67,17 +67,6 @@ const imgFilter = {
   },
 };
 
-const onImgEditFormEscKeydown = (evt) => {
-
-  if(commentTextarea === document.activeElement || hashtagsInput === document.activeElement) {
-    return evt;
-  }
-
-  if(isEscapeKey(evt)) {
-    evt.preventDefault();
-    closeImgEditForm();
-  }
-};
 
 const addFilter = function(evt) {
   imgUploadPreview.removeAttribute('class');
@@ -116,6 +105,18 @@ const scaleCountDown = function () {
   }
   scaleControlInputValue.value = `${scaleCounter}%`;
   imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
+};
+
+const onImgEditFormEscKeydown = (evt) => {
+  if(commentTextarea === document.activeElement || hashtagsInput === document.activeElement) {
+    return evt;
+  }
+
+  if(isEscapeKey(evt)) {
+    evt.preventDefault();
+    // eslint-disable-next-line no-use-before-define
+    closeImgEditForm();
+  }
 };
 
 const openImgEditForm = function() {
@@ -168,12 +169,11 @@ uploadFileInput.addEventListener('change', () => {
 // валидация полей ввода комментариев и хэштегов
 
 hashtagsInput.addEventListener('input', () => {
-  const listOfhashtags = hashtagsInput.value.toLowerCase().split(' ');
-  console.log(listOfhashtags, listOfhashtags.length);
 
+  const listOfhashtags = hashtagsInput.value.toLowerCase().split(' ');
   const re = /^#[A-Za-zA-яА-яЁё0-9]{1,19}$/;
 
-  const isHashtahRight = function(hashtag) {
+  const isHashtagRight = function(hashtag) {
     return re.test(hashtag) === true;
   };
 
@@ -186,13 +186,15 @@ hashtagsInput.addEventListener('input', () => {
     return true;
   };
 
-  if (!listOfhashtags.every(isHashtahRight)) {
+  if (hashtagsInput.value === '') {
+    hashtagsInput.setCustomValidity('');
+  } else if (!listOfhashtags.every(isHashtagRight)) {
     hashtagsInput.setCustomValidity('хэштег должен начинаться с #, состоять из латинских или русских букв и быть не длиннее 20 симв., включая #');
   } else if (listOfhashtags.length > MAX_NUMBER_OF_HASHTAGS) {
     hashtagsInput.setCustomValidity(`Можно добавить не более 5 хэштегов, удалите лишние ${ listOfhashtags.length - MAX_NUMBER_OF_HASHTAGS }`);
   } else if (!isHashtagUniq(listOfhashtags)) {
     hashtagsInput.setCustomValidity('Хэштеги не должны повторяться');
-  } else if (listOfhashtags.every(isHashtahRight) && listOfhashtags.length <= MAX_NUMBER_OF_HASHTAGS) {
+  } else {
     hashtagsInput.setCustomValidity('');
   }
   hashtagsInput.reportValidity();

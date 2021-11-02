@@ -41,12 +41,6 @@ const createRandomIdFromRange = function (min, max) {
   };
 };
 
-const isEscapeKey = (evt) => {
-  return evt.key === 'Escape';
-};
-
-// const isEnterKey = (evt) => {
-//   return evt.key === 'Enter';
-// };
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
 export { getRandomNumber, createRandomIdFromRange, isEscapeKey };
