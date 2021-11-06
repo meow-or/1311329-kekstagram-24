@@ -21,7 +21,6 @@ const effectLevelFieldset = document.querySelector('.effect-level');
 
 noUiSlider.create(effectLevelSlider, {
   start: 100,
-  tooltips: [true],
   connect: [true, false],
   step: 1,
   range: {
@@ -33,40 +32,83 @@ noUiSlider.create(effectLevelSlider, {
 const imgFilter = {
   none: () => {
     imgUploadPreview.style.filter = 'none';
-
   },
   chrome: () => {
-    effectLevelSlider.noUiSlider.on('update', () => {
-      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-      imgUploadPreview.style.filter = `grayscale(${0.01 * effectLevelValue.value})`;
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+      effectLevelValue.value = values[handle];
+      imgUploadPreview.style.filter = `grayscale(${effectLevelValue.value})`;
+    });
+
+    effectLevelSlider.noUiSlider.updateOptions({
+      start: 1,
+      step: 0.1,
+      range: {
+        'min': 0,
+        'max': 1,
+      },
     });
   },
   sepia: () => {
-    effectLevelSlider.noUiSlider.on('update', () => {
-      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-      imgUploadPreview.style.filter = `sepia(${0.01 * effectLevelValue.value})`;
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+      effectLevelValue.value = values[handle];
+      imgUploadPreview.style.filter = `sepia(${effectLevelValue.value})`;
+    });
+
+    effectLevelSlider.noUiSlider.updateOptions({
+      start: 1,
+      step: 0.1,
+      range: {
+        'min': 0,
+        'max': 1,
+      },
     });
   },
   marvin: () => {
-    effectLevelSlider.noUiSlider.on('update', () => {
-      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+      effectLevelValue.value = values[handle];
       imgUploadPreview.style.filter = `invert(${effectLevelValue.value}%)`;
+    });
+
+    effectLevelSlider.noUiSlider.updateOptions({
+      start: 100,
+      step: 1,
+      range: {
+        'min': 0,
+        'max': 100,
+      },
     });
   },
   phobos: () => {
-    effectLevelSlider.noUiSlider.on('update', () => {
-      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-      imgUploadPreview.style.filter = `blur(${0.03 * effectLevelValue.value}px)`;
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+      effectLevelValue.value = values[handle];
+      imgUploadPreview.style.filter = `blur(${effectLevelValue.value}px)`;
+    });
+
+    effectLevelSlider.noUiSlider.updateOptions({
+      start: 3,
+      step: 0.1,
+      range: {
+        'min': 0,
+        'max': 3,
+      },
     });
   },
   heat: () => {
-    effectLevelSlider.noUiSlider.on('update', () => {
-      effectLevelValue.value = effectLevelSlider.noUiSlider.get();
-      imgUploadPreview.style.filter = `brightness(${0.03 * effectLevelValue.value})`;
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+      effectLevelValue.value = values[handle];
+      imgUploadPreview.style.filter = `brightness(${effectLevelValue.value})`;
+    });
+
+    effectLevelSlider.noUiSlider.updateOptions({
+      start: 3,
+      step: 0.1,
+      range: {
+        'min': 0,
+        'max': 3,
+      },
     });
   },
 };
-
 
 const addFilter = function(evt) {
   imgUploadPreview.removeAttribute('class');
@@ -108,10 +150,6 @@ const scaleCountDown = function () {
 };
 
 const onImgEditFormEscKeydown = (evt) => {
-  if(commentTextarea === document.activeElement || hashtagsInput === document.activeElement) {
-    return evt;
-  }
-
   if(isEscapeKey(evt)) {
     evt.preventDefault();
     // eslint-disable-next-line no-use-before-define
@@ -119,57 +157,11 @@ const onImgEditFormEscKeydown = (evt) => {
   }
 };
 
-const openImgEditForm = function() {
-  imgEditForm.classList.remove('hidden');
-  body.classList.add('modal-open');
-  effectLevelFieldset.classList.add('hidden');
-
-  scaleControlBiggerButton.addEventListener('click', scaleCountUp);
-  scaleControlSmallerButton.addEventListener('click', scaleCountDown);
-
-  document.addEventListener('keydown', onImgEditFormEscKeydown);
-
-  listOfEffectButtons.forEach((effectButton) => {
-    effectButton.addEventListener('click', (evt) => {
-      if(evt.target.value === 'none') {
-        effectLevelFieldset.classList.add('hidden');
-      } else {
-        effectLevelFieldset.classList.remove('hidden');
-      }
-      addFilter(evt);
-    });
-  });
+const stopPropagationOnKeyDown = function(evt) {
+  evt.stopPropagation();
 };
 
-
-const closeImgEditForm = function() {
-  imgEditForm.classList.add('hidden');
-  body.classList.remove('modal-open');
-
-  scaleControlBiggerButton.removeEventListener('click', scaleCountUp);
-  scaleControlSmallerButton.removeEventListener('click', scaleCountDown);
-
-  document.removeEventListener('keydown', onImgEditFormEscKeydown);
-
-  listOfEffectButtons.forEach((effectButton) => {
-    effectButton.removeEventListener('click', (evt) => addFilter(evt));
-  });
-
-  imgUploadPreview.removeAttribute('class');
-  imgUploadPreview.removeAttribute('style');
-
-  form.reset();
-  effectLevelSlider.noUiSlider.set([100]);
-};
-
-uploadFileInput.addEventListener('change', () => {
-  openImgEditForm();
-});
-
-// валидация полей ввода комментариев и хэштегов
-
-hashtagsInput.addEventListener('input', () => {
-
+const hashtagsInputValidation = function() {
   const listOfhashtags = hashtagsInput.value.toLowerCase().split(' ');
   const re = /^#[A-Za-zA-яА-яЁё0-9]{1,19}$/;
 
@@ -198,10 +190,9 @@ hashtagsInput.addEventListener('input', () => {
     hashtagsInput.setCustomValidity('');
   }
   hashtagsInput.reportValidity();
-});
+};
 
-
-commentTextarea.addEventListener('input', () => {
+const commentTextareaValidation = function() {
   const valueLength = commentTextarea.value.length;
   if (valueLength > MAX_COMMENT_LENGTH) {
     commentTextarea.setCustomValidity(`Удалите лишние ${ valueLength - MAX_COMMENT_LENGTH } симв.`);
@@ -209,10 +200,58 @@ commentTextarea.addEventListener('input', () => {
     commentTextarea.setCustomValidity('');
   }
   commentTextarea.reportValidity();
-});
+};
 
-closeEditFormButton.addEventListener('click', () => {
-  closeImgEditForm();
-});
+const openImgEditForm = function() {
+  imgEditForm.classList.remove('hidden');
+  body.classList.add('modal-open');
+  effectLevelFieldset.classList.add('hidden');
+
+  scaleControlBiggerButton.addEventListener('click', scaleCountUp);
+  scaleControlSmallerButton.addEventListener('click', scaleCountDown);
+  commentTextarea.addEventListener('keydown', stopPropagationOnKeyDown);
+  hashtagsInput.addEventListener('keydown', stopPropagationOnKeyDown);
+  commentTextarea.addEventListener('input', commentTextareaValidation);
+  hashtagsInput.addEventListener('input', hashtagsInputValidation);
+  document.addEventListener('keydown', onImgEditFormEscKeydown);
+
+  listOfEffectButtons.forEach((effectButton) => {
+    effectButton.addEventListener('click', (evt) => {
+      if(evt.target.value === 'none') {
+        effectLevelFieldset.classList.add('hidden');
+      } else {
+        effectLevelFieldset.classList.remove('hidden');
+      }
+      addFilter(evt);
+    });
+  });
+};
+
+const closeImgEditForm = function() {
+  imgEditForm.classList.add('hidden');
+  body.classList.remove('modal-open');
+
+  scaleControlBiggerButton.removeEventListener('click', scaleCountUp);
+  scaleControlSmallerButton.removeEventListener('click', scaleCountDown);
+  commentTextarea.removeEventListener('keydown', stopPropagationOnKeyDown);
+  hashtagsInput.removeEventListener('keydown', stopPropagationOnKeyDown);
+  commentTextarea.removeEventListener('input', commentTextareaValidation);
+  hashtagsInput.removeEventListener('input', hashtagsInputValidation);
+  document.removeEventListener('keydown', onImgEditFormEscKeydown);
+
+  listOfEffectButtons.forEach((effectButton) => {
+    effectButton.removeEventListener('click', (evt) => addFilter(evt));
+  });
+
+  imgUploadPreview.removeAttribute('class');
+  imgUploadPreview.removeAttribute('style');
+
+  form.reset();
+  effectLevelSlider.noUiSlider.set([100]);
+  uploadFileInput.removeEventListener('change', openImgEditForm);
+};
+
+uploadFileInput.addEventListener('change', openImgEditForm);
+closeEditFormButton.addEventListener('click', closeImgEditForm);
 
 
