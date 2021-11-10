@@ -1,20 +1,23 @@
+const kekstagramServer = 'https://24.javascript.pages.academy/kekstagram';
+
 const getData = (onSuccess, onFail) => {
-  fetch('https://24.javascript.pages.academy/kekstagram/data')
+  fetch(`${kekstagramServer}/data`)
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else {
-        onFail('Не удалось получить данные. Попробуйте перезагрузить страницу');
       }
+
+      throw new Error(`${response.status} ${response.statusText}`);
     })
-    .then((cards) => {
-      onSuccess(cards);
+    .then(onSuccess)
+    .catch((err) => {
+      onFail(err);
     });
 };
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    'https://24.javascript.pages.academy/kekstagram',
+    kekstagramServer,
     {
       method: 'POST',
       body,
@@ -23,11 +26,11 @@ const sendData = (onSuccess, onFail, body) => {
     if (response.ok) {
       onSuccess();
     } else {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      throw new Error(`${response.status} ${response.statusText}`);
     }
   })
-    .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+    .catch((err) => {
+      onFail(err);
     });
 
 };
