@@ -1,4 +1,5 @@
-import { isEscapeKey } from './utils.js';
+import { isEscapeKey, showSuccess, showError } from './utils.js';
+import { sendData } from './api.js';
 
 const MAX_COMMENT_LENGTH = 140;
 const MAX_NUMBER_OF_HASHTAGS = 5;
@@ -259,4 +260,27 @@ const openImgEditForm = function() {
 uploadFileInput.addEventListener('change', openImgEditForm);
 closeEditFormButton.addEventListener('click', closeImgEditForm);
 
+const closeFormOnSuccess = function () {
+  closeImgEditForm();
+  showSuccess();
+};
+
+const closeFormOnError = function () {
+  closeImgEditForm();
+  showError();
+};
+
+const setUploadFormSubmit = (onSuccess) => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData(
+      () => onSuccess(),
+      () => closeFormOnError(),
+      new FormData(evt.target),
+    );
+  });
+};
+
+setUploadFormSubmit(closeFormOnSuccess);
 
