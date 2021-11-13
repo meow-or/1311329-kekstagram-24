@@ -23,6 +23,12 @@ const effectLevelValue = document.querySelector('.effect-level__value');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const imgUploadBaseClass = 'img-upload__preview';
 const effectLevelFieldset = document.querySelector('.effect-level');
+const imgFiltersForm = document.querySelector('.img-filters__form');
+const filterButtons = imgFiltersForm.querySelectorAll('.img-filters__button');
+const activeFilterButtonClass = 'img-filters__button--active';
+const defaultFilterButton = imgFiltersForm.querySelector('#filter-default');
+const randomFilterButton = imgFiltersForm.querySelector('#filter-random');
+const discussedFilterButton = imgFiltersForm.querySelector('#filter-discussed');
 const slider = noUiSlider.create(effectLevelSlider, {
   start: 100,
   connect: [true, false],
@@ -268,6 +274,36 @@ const closeFormOnSuccess = function () {
 const closeFormOnError = function () {
   closeImgEditForm();
   showError();
+};
+
+filterButtons.forEach((button) => {
+  button.addEventListener('click', (evt) => {
+    evt.target.classList.toggle(activeFilterButtonClass);
+  });
+});
+
+const setDefaultFilter = function (cb) {
+  defaultFilterButton.addEventListener('click', (evt) => {
+
+
+    cb();
+  });
+};
+
+const setRandomFilter = function (cb) {
+  randomFilterButton.addEventListener('click', (evt) => {
+
+
+    cb();
+  });
+};
+
+const setDiscussedFilter = function (cb) {
+  discussedFilterButton.addEventListener('click', (evt) => {
+
+
+    cb();
+  });
 };
 
 const setUploadFormSubmit = (onSuccess) => {
