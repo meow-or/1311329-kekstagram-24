@@ -10,9 +10,7 @@ const getData = (onSuccess, onFail) => {
       throw new Error(`${response.status} ${response.statusText}`);
     })
     .then(onSuccess)
-    .catch((err) => {
-      onFail(err);
-    });
+    .catch(onFail);
 };
 
 const sendData = (onSuccess, onFail, body) => {
@@ -29,10 +27,7 @@ const sendData = (onSuccess, onFail, body) => {
       throw new Error(`${response.status} ${response.statusText}`);
     }
   })
-    .catch((err) => {
-      onFail(err);
-    });
-
+    .catch(onFail);
 };
 
 export {getData, sendData};

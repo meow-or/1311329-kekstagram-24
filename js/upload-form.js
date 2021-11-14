@@ -276,32 +276,30 @@ const closeFormOnError = function () {
   showError();
 };
 
-filterButtons.forEach((button) => {
-  button.addEventListener('click', (evt) => {
-    evt.target.classList.toggle(activeFilterButtonClass);
+const toggleActiveFilter = function (evt) {
+  filterButtons.forEach((button) => {
+    button.classList.remove(activeFilterButtonClass);
   });
-});
+  evt.target.classList.toggle(activeFilterButtonClass);
+};
 
 const setDefaultFilter = function (cb) {
   defaultFilterButton.addEventListener('click', (evt) => {
-
-
+    toggleActiveFilter(evt);
     cb();
   });
 };
 
 const setRandomFilter = function (cb) {
   randomFilterButton.addEventListener('click', (evt) => {
-
-
+    toggleActiveFilter(evt);
     cb();
   });
 };
 
 const setDiscussedFilter = function (cb) {
   discussedFilterButton.addEventListener('click', (evt) => {
-
-
+    toggleActiveFilter(evt);
     cb();
   });
 };
@@ -320,3 +318,4 @@ const setUploadFormSubmit = (onSuccess) => {
 
 setUploadFormSubmit(closeFormOnSuccess);
 
+export {setDefaultFilter, setRandomFilter, setDiscussedFilter};
