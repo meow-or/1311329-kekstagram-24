@@ -6,6 +6,7 @@ const MAX_NUMBER_OF_HASHTAGS = 5;
 const MIN_PICTURE_SIZE = 25;
 const MAX_PICTURE_SIZE = 100;
 const MAX_SLIDER_LEVEL = 100;
+const STARTING_POSITION_OF_SLIDER = 100;
 
 const form = document.querySelector('.img-upload__form');
 const uploadFileInput = document.querySelector('#upload-file');
@@ -30,7 +31,7 @@ const defaultFilterButton = imgFiltersForm.querySelector('#filter-default');
 const randomFilterButton = imgFiltersForm.querySelector('#filter-random');
 const discussedFilterButton = imgFiltersForm.querySelector('#filter-discussed');
 const slider = noUiSlider.create(effectLevelSlider, {
-  start: 100,
+  start: STARTING_POSITION_OF_SLIDER,
   connect: [true, false],
   step: 1,
   range: {
