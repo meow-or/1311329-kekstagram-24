@@ -98,6 +98,6 @@ const createPhotoDescription = function () {
   };
 };
 
-const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
+//const listOfPhotoDescriptions = Array.from({ length: DESCRIPTIONS_COUNT }, createPhotoDescription);
 
-export { listOfPhotoDescriptions, listOfComments };
+//export { listOfPhotoDescriptions, listOfComments };

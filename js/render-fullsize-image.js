@@ -1,6 +1,6 @@
 
-import { listOfPhotoDescriptions } from './data.js';
 import { previewsContainer } from './render-preview.js';
+import { getData } from './api.js';
 
 const commentTemplate = document.querySelector('.social__comment');
 const commentContainer = document.querySelector('.social__comments');
@@ -17,7 +17,7 @@ const photoCaption = document.querySelector('.social__caption');
 const loadMoreComments = document.querySelector('.comments-loader');
 const closeFullPhotoButton = document.querySelector('.big-picture__cancel');
 
-
+/*
 listOfAddedPreviews.forEach((preview) => {
   const previewPhoto = preview.querySelector('.picture__img');
   const previewComments = preview.querySelector('.picture__comments');
@@ -38,40 +38,39 @@ listOfAddedPreviews.forEach((preview) => {
     closeFullPhotoButton.addEventListener('click', () => {
       fullSizePhotoContainer.classList.add('hidden');
       body.classList.remove('modal-open');
-  });
+    });
 
-//пока что скрыть блоки загрузки и счета комментариев
+    //пока что скрыть блоки загрузки и счета комментариев
     shownComments.classList.add('hidden');
     loadMoreComments.classList.add('hidden');
 
-        listOfPhotoDescriptions.forEach(({url, description, likes, comments}) => {
+    listOfPhotoDescriptions.forEach(({url, description, likes, comments}) => {
 
-            comments.forEach(({avatar, message, name}) => {
-            const photoComment = commentTemplate.cloneNode(true);
+      comments.forEach(({avatar, message, name}) => {
+        const photoComment = commentTemplate.cloneNode(true);
 
 
-            photoComment.querySelector('.social__picture').src = avatar;
-            photoComment.querySelector('.social__picture').alt = name;
-            photoComment.querySelector('.social__text').textContent = message;
+        photoComment.querySelector('.social__picture').src = avatar;
+        photoComment.querySelector('.social__picture').alt = name;
+        photoComment.querySelector('.social__text').textContent = message;
 
-            listOfFullPhotoComments.appendChild(photoComment);
+        listOfFullPhotoComments.appendChild(photoComment);
 
-          });
+      });
 
-          commentContainer.innerHTML = '';
-          commentContainer.appendChild(listOfFullPhotoComments);
+      commentContainer.innerHTML = '';
+      commentContainer.appendChild(listOfFullPhotoComments);
 
-          photoCaption.textContent = description;
+      photoCaption.textContent = description;
 
-        });
+    });
 
     fullSizePhoto.src = previewPhoto.src;
     fullSizePhoto.alt = previewPhoto.alt;
 
     commentsNumber.textContent = previewComments.textContent;
     likesNumber.textContent = previewLikes.textContent;
-  })
+  });
 });
 
-
-
+*/
