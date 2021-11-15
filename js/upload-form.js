@@ -6,6 +6,7 @@ const MAX_NUMBER_OF_HASHTAGS = 5;
 const MIN_PICTURE_SIZE = 25;
 const MAX_PICTURE_SIZE = 100;
 const MAX_SLIDER_LEVEL = 100;
+const STARTING_POSITION_OF_SLIDER = 100;
 
 const form = document.querySelector('.img-upload__form');
 const uploadFileInput = document.querySelector('#upload-file');
@@ -23,8 +24,14 @@ const effectLevelValue = document.querySelector('.effect-level__value');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const imgUploadBaseClass = 'img-upload__preview';
 const effectLevelFieldset = document.querySelector('.effect-level');
+const imgFiltersForm = document.querySelector('.img-filters__form');
+const filterButtons = imgFiltersForm.querySelectorAll('.img-filters__button');
+const activeFilterButtonClass = 'img-filters__button--active';
+const defaultFilterButton = imgFiltersForm.querySelector('#filter-default');
+const randomFilterButton = imgFiltersForm.querySelector('#filter-random');
+const discussedFilterButton = imgFiltersForm.querySelector('#filter-discussed');
 const slider = noUiSlider.create(effectLevelSlider, {
-  start: 100,
+  start: STARTING_POSITION_OF_SLIDER,
   connect: [true, false],
   step: 1,
   range: {
@@ -270,6 +277,34 @@ const closeFormOnError = function () {
   showError();
 };
 
+const toggleActiveFilter = function (evt) {
+  filterButtons.forEach((button) => {
+    button.classList.remove(activeFilterButtonClass);
+  });
+  evt.target.classList.toggle(activeFilterButtonClass);
+};
+
+const setDefaultFilter = function (cb) {
+  defaultFilterButton.addEventListener('click', (evt) => {
+    toggleActiveFilter(evt);
+    cb();
+  });
+};
+
+const setRandomFilter = function (cb) {
+  randomFilterButton.addEventListener('click', (evt) => {
+    toggleActiveFilter(evt);
+    cb();
+  });
+};
+
+const setDiscussedFilter = function (cb) {
+  discussedFilterButton.addEventListener('click', (evt) => {
+    toggleActiveFilter(evt);
+    cb();
+  });
+};
+
 const setUploadFormSubmit = (onSuccess) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -284,3 +319,4 @@ const setUploadFormSubmit = (onSuccess) => {
 
 setUploadFormSubmit(closeFormOnSuccess);
 
+export {setDefaultFilter, setRandomFilter, setDiscussedFilter};
