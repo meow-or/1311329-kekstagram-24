@@ -1,3 +1,5 @@
+import { openFullsizePhoto } from './render-fullsize-image.js';
+
 const CARDS_COUNT = 25;
 const START_OF_COUNT = CARDS_COUNT - 10;
 
@@ -28,6 +30,8 @@ const renderCards = (cards) => {
 
   clearPictureContainer();
   previewsContainer.appendChild(listOfPreviewsFragment);
+
+  openFullsizePhoto(previewsContainer, cards);
 };
 
 const getRandomCard = function() {
@@ -56,6 +60,8 @@ const renderRandomCards = (cards) => {
 
   clearPictureContainer();
   previewsContainer.appendChild(listOfPreviewsFragment);
+
+  openFullsizePhoto(previewsContainer, cards);
 };
 
 const renderDiscussedCards = (cards) => {
@@ -67,6 +73,8 @@ const renderDiscussedCards = (cards) => {
 
   clearPictureContainer();
   previewsContainer.appendChild(listOfPreviewsFragment);
+
+  openFullsizePhoto(previewsContainer, cards);
 };
 
-export { previewsContainer, renderCards, renderRandomCards, renderDiscussedCards };
+export { previewsContainer, previewTemplate, renderCards, renderRandomCards, renderDiscussedCards };

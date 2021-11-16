@@ -1,76 +1,71 @@
+import { isEscapeKey } from './utils.js';
 
-import { previewsContainer } from './render-preview.js';
-import { getData } from './api.js';
-
-const commentTemplate = document.querySelector('.social__comment');
-const commentContainer = document.querySelector('.social__comments');
-const listOfFullPhotoComments = document.createDocumentFragment();
-
-const listOfAddedPreviews = previewsContainer.querySelectorAll('.picture');
 const fullSizePhotoContainer = document.querySelector('.big-picture');
+const closeFullPhotoButton = document.querySelector('.big-picture__cancel');
 const fullSizePhoto = fullSizePhotoContainer.querySelector('.big-picture__img img');
-const body = document.querySelector('body');
-const shownComments = document.querySelector('.social__comment-count');
 const commentsNumber = document.querySelector('.comments-count');
 const likesNumber = document.querySelector('.likes-count');
+
+const commentTemplate = document.querySelector('#comment').content.querySelector('.social__comment');
+const commentContainer = document.querySelector('.social__comments');
+const listOfFullPhotoComments = document.createDocumentFragment();
 const photoCaption = document.querySelector('.social__caption');
+const shownComments = document.querySelector('.social__comment-count');
 const loadMoreComments = document.querySelector('.comments-loader');
-const closeFullPhotoButton = document.querySelector('.big-picture__cancel');
 
-/*
-listOfAddedPreviews.forEach((preview) => {
-  const previewPhoto = preview.querySelector('.picture__img');
-  const previewComments = preview.querySelector('.picture__comments');
-  const previewLikes = preview.querySelector('.picture__likes');
+const closePhotoPopup = function () {
+  fullSizePhotoContainer.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+};
 
-  previewPhoto.addEventListener('click', () => {
-    fullSizePhotoContainer.classList.remove('hidden');
-    body.classList.add('modal-open');
+const closePhotoPopupOnEsc = function (evt) {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+  }
 
-    document.addEventListener('keydown', (evt) => {
-      if(evt.key === 'Escape') {
-        evt.preventDefault();
-        fullSizePhotoContainer.classList.add('hidden');
-        body.classList.remove('modal-open');
-      }
-    });
+  closePhotoPopup();
+};
 
-    closeFullPhotoButton.addEventListener('click', () => {
-      fullSizePhotoContainer.classList.add('hidden');
-      body.classList.remove('modal-open');
-    });
+const openFullsizePhoto = function (previewsContainer, data) {
+  const listOfAddedPreviews = previewsContainer.querySelectorAll('.picture');
 
-    //пока что скрыть блоки загрузки и счета комментариев
-    shownComments.classList.add('hidden');
-    loadMoreComments.classList.add('hidden');
+  listOfAddedPreviews.forEach((preview) => {
 
-    listOfPhotoDescriptions.forEach(({url, description, likes, comments}) => {
+    const openPhotoPopup = function (evt) {
+      fullSizePhotoContainer.classList.remove('hidden');
+      document.body.classList.add('modal-open');
 
-      comments.forEach(({avatar, message, name}) => {
-        const photoComment = commentTemplate.cloneNode(true);
+      fullSizePhoto.src = evt.target.src;
+      fullSizePhoto.alt = evt.target.alt;
+      commentsNumber.textContent = evt.currentTarget.querySelector('.picture__comments').textContent;
+      likesNumber.textContent = evt.currentTarget.querySelector('.picture__likes').textContent;
 
+      data.forEach((item) => {
+        if (evt.target.src.includes(item.url)) {
+          photoCaption.textContent = item.description;
 
-        photoComment.querySelector('.social__picture').src = avatar;
-        photoComment.querySelector('.social__picture').alt = name;
-        photoComment.querySelector('.social__text').textContent = message;
+          item.comments.forEach(({avatar, message, name}) => {
+            const photoComment = commentTemplate.cloneNode(true);
 
-        listOfFullPhotoComments.appendChild(photoComment);
+            photoComment.querySelector('.social__picture').src = avatar;
+            photoComment.querySelector('.social__picture').alt = name;
+            photoComment.querySelector('.social__text').textContent = message;
 
+            listOfFullPhotoComments.appendChild(photoComment);
+          });
+        }
       });
-
       commentContainer.innerHTML = '';
       commentContainer.appendChild(listOfFullPhotoComments);
+    };
 
-      photoCaption.textContent = description;
+    preview.addEventListener('click', openPhotoPopup);
+    closeFullPhotoButton.addEventListener('click', closePhotoPopup);
+    document.addEventListener('keydown', closePhotoPopupOnEsc);
 
-    });
-
-    fullSizePhoto.src = previewPhoto.src;
-    fullSizePhoto.alt = previewPhoto.alt;
-
-    commentsNumber.textContent = previewComments.textContent;
-    likesNumber.textContent = previewLikes.textContent;
+    shownComments.classList.add('hidden');
+    loadMoreComments.classList.add('hidden');
   });
-});
+};
 
-*/
+export { openFullsizePhoto };
