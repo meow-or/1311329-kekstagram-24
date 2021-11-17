@@ -37,14 +37,14 @@ const openFullsizePhoto = function (previewsContainer, data) {
 
       fullSizePhoto.src = evt.target.src;
       fullSizePhoto.alt = evt.target.alt;
-      commentsNumber.textContent = evt.currentTarget.querySelector('.picture__comments').textContent;
-      likesNumber.textContent = evt.currentTarget.querySelector('.picture__likes').textContent;
 
-      data.forEach((item) => {
-        if (evt.target.src.includes(item.url)) {
-          photoCaption.textContent = item.description;
+      const fillCardData = function (card) {
+        if (evt.target.src.includes(card.url)) {
+          photoCaption.textContent = card.description;
+          commentsNumber.textContent = card.comments.length;
+          likesNumber.textContent = card.likes;
 
-          item.comments.forEach(({avatar, message, name}) => {
+          card.comments.forEach(({avatar, message, name}) => {
             const photoComment = commentTemplate.cloneNode(true);
 
             photoComment.querySelector('.social__picture').src = avatar;
@@ -54,7 +54,12 @@ const openFullsizePhoto = function (previewsContainer, data) {
             listOfFullPhotoComments.appendChild(photoComment);
           });
         }
+      };
+
+      data.forEach((card) => {
+        fillCardData(card);
       });
+
       commentContainer.innerHTML = '';
       commentContainer.appendChild(listOfFullPhotoComments);
     };
