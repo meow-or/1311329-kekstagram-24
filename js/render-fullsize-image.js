@@ -14,12 +14,46 @@ const commentContainer = document.querySelector('.social__comments');
 const listOfFullPhotoComments = document.createDocumentFragment();
 const photoCaption = document.querySelector('.social__caption');
 const shownComments = document.querySelector('.social__comment-count');
-let commentCounter;
-// const loadMoreComments = document.querySelector('.comments-loader');
+const pictureClass = '.picture__img';
+let commentCounter = NUMBER_OF_LOADING_COMMENTS;
 
-// function loadMoreComments () {
-//   commentCounter += NUMBER_OF_LOADING_COMMENTS;
-// }
+function loadMoreComments (data) {
+  commentCounter += NUMBER_OF_LOADING_COMMENTS;
+  console.log(commentCounter);
+  shownComments.textContent = `${commentCounter} из ${commentsNumber.textContent} комментариев`;
+  renderComments(data.card);
+}
+
+function renderComments (card) {
+  card.comments
+    .slice(0, commentCounter)
+    .forEach(({avatar, message, name}) => fillCardCommentsData ({avatar, message, name}));
+
+  commentContainer.innerHTML = '';
+  commentContainer.appendChild(listOfFullPhotoComments);
+}
+
+
+function fillCardCommentsData ({avatar, message, name}) {
+  const photoComment = commentTemplate.cloneNode(true);
+
+  photoComment.querySelector('.social__picture').src = avatar;
+  photoComment.querySelector('.social__picture').alt = name;
+  photoComment.querySelector('.social__text').textContent = message;
+
+  listOfFullPhotoComments.appendChild(photoComment);
+}
+
+function fillCardData (evt, card) {
+
+  if (evt.target.src.includes(card.url)) {
+    photoCaption.textContent = card.description;
+    commentsNumber.textContent = card.comments.length;
+    likesNumber.textContent = card.likes;
+
+    renderComments (card);
+  }
+}
 
 function openPhotoPopup (evt, data) {
   fullSizePhotoContainer.classList.remove('hidden');
@@ -27,42 +61,12 @@ function openPhotoPopup (evt, data) {
 
   closeFullPhotoButton.addEventListener('click', closePhotoPopup);
   document.addEventListener('keydown', closePhotoPopupOnEsc);
-  // loadCommentsButton.addEventListener('click', () => {
-  //   commentCounter += NUMBER_OF_LOADING_COMMENTS;
-  // });
+  loadCommentsButton.addEventListener('click', loadMoreComments);
 
   fullSizePhoto.src = evt.target.src;
   fullSizePhoto.alt = evt.target.alt;
 
-  data.forEach((item) => {
-
-    if (evt.target.src.includes(item.url)) {
-      photoCaption.textContent = item.description;
-      commentsNumber.textContent = item.comments.length;
-      likesNumber.textContent = item.likes;
-
-      item.comments
-        .slice(0, 5)
-        .forEach(({avatar, message, name}) => {
-          const photoComment = commentTemplate.cloneNode(true);
-
-          photoComment.querySelector('.social__picture').src = avatar;
-          photoComment.querySelector('.social__picture').alt = name;
-          photoComment.querySelector('.social__text').textContent = message;
-
-          listOfFullPhotoComments.appendChild(photoComment);
-        });
-
-      // if (item.comments.length <= NUMBER_OF_LOADING_COMMENTS) {
-      //   commentCounter = item.comments.length;
-      // }
-
-      commentContainer.innerHTML = '';
-      commentContainer.appendChild(listOfFullPhotoComments);
-
-      //shownComments.textContent = `${commentCounter} из ${commentsNumber.textContent} комментариев`;
-    }
-  });
+  data.forEach((card) => fillCardData(evt, card));
 }
 
 function closePhotoPopup () {
@@ -71,8 +75,9 @@ function closePhotoPopup () {
 
   closeFullPhotoButton.removeEventListener('click', closePhotoPopup);
   document.removeEventListener('keydown', closePhotoPopupOnEsc);
-  //loadCommentsButton.removeEventListener('click', loadMoreComments);
-
+  loadCommentsButton.removeEventListener('click', loadMoreComments);
+  shownComments.textContent = `${NUMBER_OF_LOADING_COMMENTS} из ${commentsNumber.textContent} комментариев`;
+  commentCounter = NUMBER_OF_LOADING_COMMENTS;
 }
 
 function closePhotoPopupOnEsc (evt) {
@@ -84,18 +89,11 @@ function closePhotoPopupOnEsc (evt) {
 }
 
 function openFullsizePhoto (previewsContainer, data) {
-  // const listOfAddedPreviews = previewsContainer.querySelectorAll('.picture');
-  // listOfAddedPreviews.forEach((preview) => {
-  //   preview.addEventListener('click', (evt) => {
-  //     openPhotoPopup(evt, data);
-  //   });
-  // });
   function onPreviewClick (evt) {
-    if (evt.target.matches('.picture__img')) {
+    if (evt.target.matches(pictureClass)) {
       openPhotoPopup(evt, data);
     }
   }
-
   previewsContainer.addEventListener('click', onPreviewClick);
 }
 

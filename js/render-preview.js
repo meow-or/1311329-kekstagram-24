@@ -1,7 +1,7 @@
 import { openFullsizePhoto } from './render-fullsize-image.js';
 
 const CARDS_COUNT = 25;
-const START_OF_COUNT = CARDS_COUNT - 10;
+const startOfCount = CARDS_COUNT - 10;
 
 const previewTemplate = document.querySelector('#picture').content
   .querySelector('.picture');
@@ -55,7 +55,7 @@ function renderRandomCards (cards) {
   cards
     .slice()
     .sort(getRandomCard)
-    .slice(START_OF_COUNT, CARDS_COUNT)
+    .slice(startOfCount, CARDS_COUNT)
     .forEach(({url, likes, comments}) => addPhotoDescription({url, likes, comments}));
 
   clearPictureContainer();
