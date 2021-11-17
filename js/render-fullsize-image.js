@@ -30,7 +30,6 @@ const openFullsizePhoto = function (previewsContainer, data) {
   const listOfAddedPreviews = previewsContainer.querySelectorAll('.picture');
 
   listOfAddedPreviews.forEach((preview) => {
-
     const openPhotoPopup = function (evt) {
       fullSizePhotoContainer.classList.remove('hidden');
       document.body.classList.add('modal-open');
