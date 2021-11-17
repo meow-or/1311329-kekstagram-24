@@ -19,12 +19,19 @@ let commentCounter = NUMBER_OF_LOADING_COMMENTS;
 
 function loadMoreComments (data) {
   commentCounter += NUMBER_OF_LOADING_COMMENTS;
-  console.log(commentCounter);
   shownComments.textContent = `${commentCounter} из ${commentsNumber.textContent} комментариев`;
-  renderComments(data.card);
+
+  renderComments(data);
 }
 
 function renderComments (card) {
+
+  if (card.comments.length <= NUMBER_OF_LOADING_COMMENTS) {
+    loadCommentsButton.classList.add('hidden');
+  } else {
+    loadCommentsButton.classList.remove('hidden');
+  }
+
   card.comments
     .slice(0, commentCounter)
     .forEach(({avatar, message, name}) => fillCardCommentsData ({avatar, message, name}));
@@ -61,7 +68,7 @@ function openPhotoPopup (evt, data) {
 
   closeFullPhotoButton.addEventListener('click', closePhotoPopup);
   document.addEventListener('keydown', closePhotoPopupOnEsc);
-  loadCommentsButton.addEventListener('click', loadMoreComments);
+  loadCommentsButton.addEventListener('click', () => loadMoreComments(data));
 
   fullSizePhoto.src = evt.target.src;
   fullSizePhoto.alt = evt.target.alt;
