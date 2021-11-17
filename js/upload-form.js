@@ -124,17 +124,17 @@ const imgFilter = {
   },
 };
 
-const addFilter = function(evt) {
+function addFilter (evt) {
   imgUploadPreview.removeAttribute('class');
   imgUploadPreview.classList.add(imgUploadBaseClass);
   imgUploadPreview.classList.add(`effects__preview--${evt.target.value}`);
   slider.set([MAX_SLIDER_LEVEL]);
   imgFilter[evt.target.value]();
-};
+}
 
 let scaleCounter = MAX_PICTURE_SIZE;
 
-const scaleCountUp = function () {
+function scaleCountUp () {
   scaleCounter += MIN_PICTURE_SIZE;
 
   if(scaleCounter >= MAX_PICTURE_SIZE) {
@@ -145,9 +145,9 @@ const scaleCountUp = function () {
     scaleControlInputValue.value = `${scaleCounter}%`;
     imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
   }
-};
+}
 
-const scaleCountDown = function () {
+function scaleCountDown () {
   scaleCounter -= MIN_PICTURE_SIZE;
 
   if(scaleCounter <= MIN_PICTURE_SIZE) {
@@ -158,17 +158,17 @@ const scaleCountDown = function () {
 
   scaleControlInputValue.value = `${scaleCounter}%`;
   imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
-};
+}
 
-const hashtagsInputValidation = function() {
+function hashtagsInputValidation () {
   const listOfhashtags = hashtagsInput.value.toLowerCase().split(' ');
   const re = /^#[A-Za-zA-яА-яЁё0-9]{1,19}$/;
 
-  const isHashtagRight = function(hashtag) {
+  function isHashtagRight (hashtag) {
     return re.test(hashtag) === true;
-  };
+  }
 
-  const isHashtagUniq = (arr) => {
+  function isHashtagUniq (arr) {
     const set = new Set();
 
     for (const item of arr) {
@@ -180,7 +180,7 @@ const hashtagsInputValidation = function() {
     }
 
     return true;
-  };
+  }
 
   if (hashtagsInput.value === '') {
     hashtagsInput.setCustomValidity('');
@@ -195,9 +195,9 @@ const hashtagsInputValidation = function() {
   }
 
   hashtagsInput.reportValidity();
-};
+}
 
-const commentTextareaValidation = function() {
+function commentTextareaValidation () {
   const valueLength = commentTextarea.value.length;
 
   if (valueLength > MAX_COMMENT_LENGTH) {
@@ -207,9 +207,9 @@ const commentTextareaValidation = function() {
   }
 
   commentTextarea.reportValidity();
-};
+}
 
-const addFilterCallback = function(evt) {
+function addFilterCallback (evt) {
   if(evt.target.value === 'none') {
     effectLevelFieldset.classList.add('hidden');
   } else {
@@ -217,16 +217,35 @@ const addFilterCallback = function(evt) {
   }
 
   addFilter(evt);
-};
+}
 
-const closeImgEditForm = function() {
+function openImgEditForm () {
+  imgEditForm.classList.remove('hidden');
+  body.classList.add('modal-open');
+  effectLevelFieldset.classList.add('hidden');
+
+  closeEditFormButton.addEventListener('click', closeImgEditForm);
+  scaleControlBiggerButton.addEventListener('click', scaleCountUp);
+  scaleControlSmallerButton.addEventListener('click', scaleCountDown);
+  commentTextarea.addEventListener('input', commentTextareaValidation);
+  hashtagsInput.addEventListener('input', hashtagsInputValidation);
+  document.addEventListener('keydown', closeFormOnEsc);
+
+  listOfEffectButtons.forEach((effectButton) => effectButton.addEventListener('click', addFilterCallback));
+}
+
+uploadFileInput.addEventListener('change', openImgEditForm);
+
+function closeImgEditForm () {
   imgEditForm.classList.add('hidden');
   body.classList.remove('modal-open');
 
+  closeEditFormButton.removeEventListener('click', closeImgEditForm);
   scaleControlBiggerButton.removeEventListener('click', scaleCountUp);
   scaleControlSmallerButton.removeEventListener('click', scaleCountDown);
   commentTextarea.removeEventListener('input', commentTextareaValidation);
   hashtagsInput.removeEventListener('input', hashtagsInputValidation);
+  document.removeEventListener('keydown', closeFormOnEsc);
 
   listOfEffectButtons.forEach((effectButton) => effectButton.removeEventListener('click', addFilterCallback));
 
@@ -234,9 +253,9 @@ const closeImgEditForm = function() {
   slider.set([MAX_SLIDER_LEVEL]);
   imgUploadPreview.removeAttribute('class');
   imgUploadPreview.removeAttribute('style');
-};
+}
 
-const closeFormOnEsc = function(evt) {
+function closeFormOnEsc (evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
   }
@@ -246,66 +265,47 @@ const closeFormOnEsc = function(evt) {
   }
 
   closeImgEditForm();
-};
+}
 
-document.removeEventListener('keydown', closeFormOnEsc);
-
-const openImgEditForm = function() {
-  imgEditForm.classList.remove('hidden');
-  body.classList.add('modal-open');
-  effectLevelFieldset.classList.add('hidden');
-
-  scaleControlBiggerButton.addEventListener('click', scaleCountUp);
-  scaleControlSmallerButton.addEventListener('click', scaleCountDown);
-  commentTextarea.addEventListener('input', commentTextareaValidation);
-  hashtagsInput.addEventListener('input', hashtagsInputValidation);
-  document.addEventListener('keydown', closeFormOnEsc);
-
-  listOfEffectButtons.forEach((effectButton) => effectButton.addEventListener('click', addFilterCallback));
-};
-
-uploadFileInput.addEventListener('change', openImgEditForm);
-closeEditFormButton.addEventListener('click', closeImgEditForm);
-
-const closeFormOnSuccess = function () {
+function closeFormOnSuccess () {
   closeImgEditForm();
   showSuccess();
-};
+}
 
-const closeFormOnError = function () {
+function closeFormOnError () {
   closeImgEditForm();
   showError();
-};
+}
 
-const toggleActiveFilter = function (evt) {
+function toggleActiveFilter (evt) {
   filterButtons.forEach((button) => {
     button.classList.remove(activeFilterButtonClass);
   });
   evt.target.classList.toggle(activeFilterButtonClass);
-};
+}
 
-const setDefaultFilter = function (cb) {
+function setDefaultFilter (cb) {
   defaultFilterButton.addEventListener('click', (evt) => {
     toggleActiveFilter(evt);
     cb();
   });
-};
+}
 
-const setRandomFilter = function (cb) {
+function setRandomFilter (cb) {
   randomFilterButton.addEventListener('click', (evt) => {
     toggleActiveFilter(evt);
     cb();
   });
-};
+}
 
-const setDiscussedFilter = function (cb) {
+function setDiscussedFilter (cb) {
   discussedFilterButton.addEventListener('click', (evt) => {
     toggleActiveFilter(evt);
     cb();
   });
-};
+}
 
-const setUploadFormSubmit = (onSuccess) => {
+function setUploadFormSubmit (onSuccess) {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -315,7 +315,7 @@ const setUploadFormSubmit = (onSuccess) => {
       new FormData(evt.target),
     );
   });
-};
+}
 
 setUploadFormSubmit(closeFormOnSuccess);
 

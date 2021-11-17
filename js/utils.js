@@ -21,20 +21,22 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
+function isEscapeKey (evt) {
+  evt.key === 'Escape';
+}
 
 const successMessageTemplate = document.querySelector('#success').content
   .querySelector('.success');
 const successMessage = successMessageTemplate.cloneNode(true);
 
-const closeSuccessPopupOnEsc = function (evt) {
+function closeSuccessPopupOnEsc (evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     successMessage.remove();
   }
-};
+}
 
-const showSuccess = function () {
+function showSuccess () {
   const successPopupBackground = 'success';
   const successButton = successMessage.querySelector('.success__button');
 
@@ -47,20 +49,20 @@ const showSuccess = function () {
   document.addEventListener('keydown', closeSuccessPopupOnEsc);
 
   document.body.appendChild(successMessage);
-};
+}
 
 const errorMessageTemplate = document.querySelector('#error').content
   .querySelector('.error');
 const errorMessage = errorMessageTemplate.cloneNode(true);
 
-const closeErrorPopupOnEsc = function (evt) {
+function closeErrorPopupOnEsc (evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     errorMessage.remove();
   }
-};
+}
 
-const showError = function () {
+function showError () {
   const errorPopupBackground = 'error';
   const errorButton = errorMessage.querySelector('.error__button');
 
@@ -73,9 +75,9 @@ const showError = function () {
   document.addEventListener('keydown', closeErrorPopupOnEsc);
 
   document.body.appendChild(errorMessage);
-};
+}
 
-const showAlert = (message) => {
+function showAlert (message) {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = 100;
   alertContainer.style.position = 'absolute';
@@ -98,7 +100,7 @@ const showAlert = (message) => {
   setTimeout(() => {
     alertContainer.remove();
   }, ALERT_SHOW_TIME);
-};
+}
 
 export {
   debounce,
