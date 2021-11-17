@@ -1,3 +1,4 @@
+
 import  { renderCards, renderRandomCards, renderDiscussedCards } from './render-preview.js';
 import './upload-form.js';
 import { setDefaultFilter, setRandomFilter, setDiscussedFilter } from './upload-form.js';
@@ -17,3 +18,4 @@ getData((cards) => {
   () => showAlert('Не удалось получить данные. Попробуйте перезагрузить страницу');
   imgFilters.classList.remove(imgFiltersInactive);
 });
+
