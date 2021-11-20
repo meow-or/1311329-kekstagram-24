@@ -54,7 +54,7 @@ function closeErrorMessage () {
   errorMessage.remove();
   errorButton.removeEventListener('click', closeErrorMessage);
   errorMessage.removeEventListener('click', overlayClickErrorMessageHandler);
-  document.removeEventListener('keydown', closeErrorPopupOnEsc);
+  document.removeEventListener('keydown', escDownErrorMessageHandler);
 }
 
 function overlayClickSuccessMessageHandler (evt) {
@@ -69,6 +69,9 @@ function overlayClickSuccessMessageHandler (evt) {
 function overlayClickErrorMessageHandler (evt) {
   if (evt.target.classList.contains(errorPopupBackground)) {
     errorMessage.remove();
+    errorButton.removeEventListener('click', closeErrorMessage);
+    errorMessage.removeEventListener('click', overlayClickErrorMessageHandler);
+    document.removeEventListener('keydown', escDownErrorMessageHandler);
   }
 }
 
@@ -80,20 +83,20 @@ function showSuccess () {
   document.body.appendChild(successMessage);
 }
 
-function closeErrorPopupOnEsc (evt) {
+function escDownErrorMessageHandler (evt) {
   if (evt.key === 'Escape') {
     evt.preventDefault();
     errorMessage.remove();
     errorButton.removeEventListener('click', closeErrorMessage);
     errorMessage.removeEventListener('click', overlayClickErrorMessageHandler);
-    document.removeEventListener('keydown', closeErrorPopupOnEsc);
+    document.removeEventListener('keydown', escDownErrorMessageHandler);
   }
 }
 
 function showError () {
   errorButton.addEventListener('click', closeErrorMessage);
   errorMessage.addEventListener('click', overlayClickErrorMessageHandler);
-  document.addEventListener('keydown', closeErrorPopupOnEsc);
+  document.addEventListener('keydown', escDownErrorMessageHandler);
 
   document.body.appendChild(errorMessage);
 }
