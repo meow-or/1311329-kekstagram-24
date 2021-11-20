@@ -1,4 +1,4 @@
-import { isEscapeKey, showSuccess, showError } from './utils.js';
+import { showSuccess, showError} from './utils.js';
 import { sendData } from './api.js';
 
 const MAX_COMMENT_LENGTH = 140;
@@ -16,7 +16,7 @@ const closeEditFormButton = document.querySelector('#upload-cancel');
 const scaleControlSmallerButton = document.querySelector('.scale__control--smaller');
 const scaleControlBiggerButton = document.querySelector('.scale__control--bigger');
 const scaleControlInputValue = document.querySelector('.scale__control--value');
-const imgUploadPreview = document.querySelector('.img-upload__preview');
+const imgUploadPreview = document.querySelector('.img-upload__preview img');
 const listOfEffectButtons = document.querySelectorAll('.effects__radio');
 const hashtagsInput = document.querySelector('.text__hashtags');
 const commentTextarea = document.querySelector('.text__description');
@@ -124,17 +124,17 @@ const imgFilter = {
   },
 };
 
-const addFilter = function(evt) {
+function addFilter (evt) {
   imgUploadPreview.removeAttribute('class');
   imgUploadPreview.classList.add(imgUploadBaseClass);
   imgUploadPreview.classList.add(`effects__preview--${evt.target.value}`);
   slider.set([MAX_SLIDER_LEVEL]);
   imgFilter[evt.target.value]();
-};
+}
 
 let scaleCounter = MAX_PICTURE_SIZE;
 
-const scaleCountUp = function () {
+function onScaleCountUpButtonClick () {
   scaleCounter += MIN_PICTURE_SIZE;
 
   if(scaleCounter >= MAX_PICTURE_SIZE) {
@@ -145,9 +145,9 @@ const scaleCountUp = function () {
     scaleControlInputValue.value = `${scaleCounter}%`;
     imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
   }
-};
+}
 
-const scaleCountDown = function () {
+function onScaleCountDownButtonClick () {
   scaleCounter -= MIN_PICTURE_SIZE;
 
   if(scaleCounter <= MIN_PICTURE_SIZE) {
@@ -158,17 +158,17 @@ const scaleCountDown = function () {
 
   scaleControlInputValue.value = `${scaleCounter}%`;
   imgUploadPreview.style.transform = `scale(.${scaleCounter})`;
-};
+}
 
-const hashtagsInputValidation = function() {
+function hashtagsInputValidationHandler () {
   const listOfhashtags = hashtagsInput.value.toLowerCase().split(' ');
   const re = /^#[A-Za-zA-яА-яЁё0-9]{1,19}$/;
 
-  const isHashtagRight = function(hashtag) {
-    return re.test(hashtag) === true;
-  };
+  function isHashtagRight (hashtag) {
+    return re.test(hashtag);
+  }
 
-  const isHashtagUniq = (arr) => {
+  function isHashtagUniq (arr) {
     const set = new Set();
 
     for (const item of arr) {
@@ -180,7 +180,7 @@ const hashtagsInputValidation = function() {
     }
 
     return true;
-  };
+  }
 
   if (hashtagsInput.value === '') {
     hashtagsInput.setCustomValidity('');
@@ -194,10 +194,18 @@ const hashtagsInputValidation = function() {
     hashtagsInput.setCustomValidity('');
   }
 
-  hashtagsInput.reportValidity();
-};
+  if (!hashtagsInput.validity.valid) {
+    hashtagsInput.style.outlineColor = 'red';
+    hashtagsInput.style.borderColor = 'red';
+  } else {
+    hashtagsInput.style.outlineColor = 'black';
+    hashtagsInput.style.borderColor = 'black';
+  }
 
-const commentTextareaValidation = function() {
+  hashtagsInput.reportValidity();
+}
+
+function commentTextareaInputValidationHandler () {
   const valueLength = commentTextarea.value.length;
 
   if (valueLength > MAX_COMMENT_LENGTH) {
@@ -206,10 +214,19 @@ const commentTextareaValidation = function() {
     commentTextarea.setCustomValidity('');
   }
 
-  commentTextarea.reportValidity();
-};
+  if (!commentTextarea.validity.valid) {
+    commentTextarea.style.outlineColor = 'red';
+    commentTextarea.style.borderColor = 'red';
+  } else {
+    commentTextarea.style.outlineColor = 'black';
+    commentTextarea.style.borderColor = 'black';
+  }
 
-const addFilterCallback = function(evt) {
+
+  commentTextarea.reportValidity();
+}
+
+function onEffectButtonClick (evt) {
   if(evt.target.value === 'none') {
     effectLevelFieldset.classList.add('hidden');
   } else {
@@ -217,95 +234,95 @@ const addFilterCallback = function(evt) {
   }
 
   addFilter(evt);
-};
+}
 
-const closeImgEditForm = function() {
+function onUploadFormOpen () {
+  imgEditForm.classList.remove('hidden');
+  body.classList.add('modal-open');
+  effectLevelFieldset.classList.add('hidden');
+
+  closeEditFormButton.addEventListener('click', onUploadFormClose);
+  scaleControlBiggerButton.addEventListener('click', onScaleCountUpButtonClick);
+  scaleControlSmallerButton.addEventListener('click', onScaleCountDownButtonClick);
+  commentTextarea.addEventListener('input', commentTextareaInputValidationHandler);
+  hashtagsInput.addEventListener('input', hashtagsInputValidationHandler);
+  document.addEventListener('keydown', escDownFormHandler);
+
+  listOfEffectButtons.forEach((effectButton) => effectButton.addEventListener('click', onEffectButtonClick));
+}
+
+uploadFileInput.addEventListener('change', onUploadFormOpen);
+
+function onUploadFormClose () {
   imgEditForm.classList.add('hidden');
   body.classList.remove('modal-open');
 
-  scaleControlBiggerButton.removeEventListener('click', scaleCountUp);
-  scaleControlSmallerButton.removeEventListener('click', scaleCountDown);
-  commentTextarea.removeEventListener('input', commentTextareaValidation);
-  hashtagsInput.removeEventListener('input', hashtagsInputValidation);
+  closeEditFormButton.removeEventListener('click', onUploadFormClose);
+  scaleControlBiggerButton.removeEventListener('click', onScaleCountUpButtonClick);
+  scaleControlSmallerButton.removeEventListener('click', onScaleCountDownButtonClick);
+  commentTextarea.removeEventListener('input', commentTextareaInputValidationHandler);
+  hashtagsInput.removeEventListener('input', hashtagsInputValidationHandler);
+  document.removeEventListener('keydown', escDownFormHandler);
 
-  listOfEffectButtons.forEach((effectButton) => effectButton.removeEventListener('click', addFilterCallback));
+  listOfEffectButtons.forEach((effectButton) => effectButton.removeEventListener('click', onEffectButtonClick));
 
   form.reset();
   slider.set([MAX_SLIDER_LEVEL]);
   imgUploadPreview.removeAttribute('class');
   imgUploadPreview.removeAttribute('style');
-};
 
-const closeFormOnEsc = function(evt) {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-  }
+  scaleCounter = MAX_PICTURE_SIZE;
+}
 
-  if (commentTextarea === document.activeElement || hashtagsInput === document.activeElement) {
+function escDownFormHandler (evt) {
+  if (evt.key !== 'Escape') {
+    return;
+  } else if (commentTextarea === document.activeElement || hashtagsInput === document.activeElement) {
     return;
   }
 
-  closeImgEditForm();
-};
+  onUploadFormClose();
+}
 
-document.removeEventListener('keydown', closeFormOnEsc);
-
-const openImgEditForm = function() {
-  imgEditForm.classList.remove('hidden');
-  body.classList.add('modal-open');
-  effectLevelFieldset.classList.add('hidden');
-
-  scaleControlBiggerButton.addEventListener('click', scaleCountUp);
-  scaleControlSmallerButton.addEventListener('click', scaleCountDown);
-  commentTextarea.addEventListener('input', commentTextareaValidation);
-  hashtagsInput.addEventListener('input', hashtagsInputValidation);
-  document.addEventListener('keydown', closeFormOnEsc);
-
-  listOfEffectButtons.forEach((effectButton) => effectButton.addEventListener('click', addFilterCallback));
-};
-
-uploadFileInput.addEventListener('change', openImgEditForm);
-closeEditFormButton.addEventListener('click', closeImgEditForm);
-
-const closeFormOnSuccess = function () {
-  closeImgEditForm();
+function closeFormOnSuccess () {
+  onUploadFormClose();
   showSuccess();
-};
+}
 
-const closeFormOnError = function () {
-  closeImgEditForm();
+function closeFormOnError () {
+  onUploadFormClose();
   showError();
-};
+}
 
-const toggleActiveFilter = function (evt) {
+function toggleActiveFilter (evt) {
   filterButtons.forEach((button) => {
     button.classList.remove(activeFilterButtonClass);
   });
   evt.target.classList.toggle(activeFilterButtonClass);
-};
+}
 
-const setDefaultFilter = function (cb) {
+function setDefaultFilter (cb) {
   defaultFilterButton.addEventListener('click', (evt) => {
     toggleActiveFilter(evt);
     cb();
   });
-};
+}
 
-const setRandomFilter = function (cb) {
+function setRandomFilter (cb) {
   randomFilterButton.addEventListener('click', (evt) => {
     toggleActiveFilter(evt);
     cb();
   });
-};
+}
 
-const setDiscussedFilter = function (cb) {
+function setDiscussedFilter (cb) {
   discussedFilterButton.addEventListener('click', (evt) => {
     toggleActiveFilter(evt);
     cb();
   });
-};
+}
 
-const setUploadFormSubmit = (onSuccess) => {
+function setUploadFormSubmit (onSuccess) {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -315,7 +332,7 @@ const setUploadFormSubmit = (onSuccess) => {
       new FormData(evt.target),
     );
   });
-};
+}
 
 setUploadFormSubmit(closeFormOnSuccess);
 

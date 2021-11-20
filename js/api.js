@@ -1,6 +1,6 @@
 const kekstagramServer = 'https://24.javascript.pages.academy/kekstagram';
 
-const getData = (onSuccess, onFail) => {
+function getData (onSuccess, onFail) {
   fetch(`${kekstagramServer}/data`)
     .then((response) => {
       if (response.ok) {
@@ -11,9 +11,9 @@ const getData = (onSuccess, onFail) => {
     })
     .then(onSuccess)
     .catch(onFail);
-};
+}
 
-const sendData = (onSuccess, onFail, body) => {
+function sendData (onSuccess, onFail, body) {
   fetch(
     kekstagramServer,
     {
@@ -23,11 +23,10 @@ const sendData = (onSuccess, onFail, body) => {
   ).then((response) => {
     if (response.ok) {
       onSuccess();
-    } else {
-      throw new Error(`${response.status} ${response.statusText}`);
     }
+    throw new Error(`${response.status} ${response.statusText}`);
   })
     .catch(onFail);
-};
+}
 
 export {getData, sendData};
