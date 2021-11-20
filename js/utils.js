@@ -21,57 +21,78 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-function isEscapeKey (evt) {
-  evt.key === 'Escape';
-}
-
 const successMessageTemplate = document.querySelector('#success').content
   .querySelector('.success');
 const successMessage = successMessageTemplate.cloneNode(true);
-
-function closeSuccessPopupOnEsc (evt) {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    successMessage.remove();
-  }
-}
-
-function showSuccess () {
-  const successPopupBackground = 'success';
-  const successButton = successMessage.querySelector('.success__button');
-
-  successButton.addEventListener('click', () => successMessage.remove());
-  successMessage.addEventListener('click', (evt) => {
-    if (evt.target.classList.contains(successPopupBackground)) {
-      successMessage.remove();
-    }
-  });
-  document.addEventListener('keydown', closeSuccessPopupOnEsc);
-
-  document.body.appendChild(successMessage);
-}
+const successPopupBackground = 'success';
+const successButton = successMessage.querySelector('.success__button');
 
 const errorMessageTemplate = document.querySelector('#error').content
   .querySelector('.error');
 const errorMessage = errorMessageTemplate.cloneNode(true);
+const errorPopupBackground = 'error';
+const errorButton = errorMessage.querySelector('.error__button');
 
-function closeErrorPopupOnEsc (evt) {
-  if (isEscapeKey(evt)) {
+function escDownSuccessMessageHandler (evt) {
+  if (evt.key === 'Escape') {
     evt.preventDefault();
+    successMessage.remove();
+    successButton.removeEventListener('click', closeSuccessMessage);
+    successMessage.removeEventListener('click', overlayClickSuccessMessageHandler);
+    document.removeEventListener('keydown', escDownSuccessMessageHandler);
+  }
+}
+
+function closeSuccessMessage () {
+  successMessage.remove();
+  successButton.removeEventListener('click', closeSuccessMessage);
+  successMessage.removeEventListener('click', overlayClickSuccessMessageHandler);
+  document.removeEventListener('keydown', escDownSuccessMessageHandler);
+}
+
+function closeErrorMessage () {
+  errorMessage.remove();
+  errorButton.removeEventListener('click', closeErrorMessage);
+  errorMessage.removeEventListener('click', overlayClickErrorMessageHandler);
+  document.removeEventListener('keydown', closeErrorPopupOnEsc);
+}
+
+function overlayClickSuccessMessageHandler (evt) {
+  if (evt.target.classList.contains(successPopupBackground)) {
+    successMessage.remove();
+    successButton.removeEventListener('click', closeSuccessMessage);
+    successMessage.removeEventListener('click', overlayClickSuccessMessageHandler);
+    document.removeEventListener('keydown', escDownSuccessMessageHandler);
+  }
+}
+
+function overlayClickErrorMessageHandler (evt) {
+  if (evt.target.classList.contains(errorPopupBackground)) {
     errorMessage.remove();
   }
 }
 
-function showError () {
-  const errorPopupBackground = 'error';
-  const errorButton = errorMessage.querySelector('.error__button');
+function showSuccess () {
+  successButton.addEventListener('click', closeSuccessMessage);
+  successMessage.addEventListener('click', overlayClickSuccessMessageHandler);
+  document.addEventListener('keydown', escDownSuccessMessageHandler);
 
-  errorButton.addEventListener('click', () => errorMessage.remove());
-  errorMessage.addEventListener('click', (evt) => {
-    if (evt.target.classList.contains(errorPopupBackground)) {
-      errorMessage.remove();
-    }
-  });
+  document.body.appendChild(successMessage);
+}
+
+function closeErrorPopupOnEsc (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    errorMessage.remove();
+    errorButton.removeEventListener('click', closeErrorMessage);
+    errorMessage.removeEventListener('click', overlayClickErrorMessageHandler);
+    document.removeEventListener('keydown', closeErrorPopupOnEsc);
+  }
+}
+
+function showError () {
+  errorButton.addEventListener('click', closeErrorMessage);
+  errorMessage.addEventListener('click', overlayClickErrorMessageHandler);
   document.addEventListener('keydown', closeErrorPopupOnEsc);
 
   document.body.appendChild(errorMessage);
@@ -104,7 +125,6 @@ function showAlert (message) {
 
 export {
   debounce,
-  isEscapeKey,
   showSuccess,
   showError,
   showAlert

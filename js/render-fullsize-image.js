@@ -1,45 +1,58 @@
-import { isEscapeKey } from './utils.js';
-
+const MIN_NUMBER_OF_LOADING_COMMENTS = 0;
 const NUMBER_OF_LOADING_COMMENTS = 5;
 
 const fullSizePhotoContainer = document.querySelector('.big-picture');
 const closeFullPhotoButton = document.querySelector('.big-picture__cancel');
-const loadCommentsButton = document.querySelector('.comments-loader');
+const moreCommentsButton = document.querySelector('.comments-loader');
 const fullSizePhoto = fullSizePhotoContainer.querySelector('.big-picture__img img');
 const commentsNumber = document.querySelector('.comments-count');
 const likesNumber = document.querySelector('.likes-count');
-
 const commentTemplate = document.querySelector('#comment').content.querySelector('.social__comment');
 const commentContainer = document.querySelector('.social__comments');
+const shownComments = document.querySelector('.social__comment-count');
 const listOfFullPhotoComments = document.createDocumentFragment();
 const photoCaption = document.querySelector('.social__caption');
-const shownComments = document.querySelector('.social__comment-count');
 const pictureClass = '.picture__img';
-let commentCounter = NUMBER_OF_LOADING_COMMENTS;
 
-function loadMoreComments (data) {
-  commentCounter += NUMBER_OF_LOADING_COMMENTS;
-  shownComments.textContent = `${commentCounter} из ${commentsNumber.textContent} комментариев`;
+let startComment = 0;
+let finalComment = 5;
+let comments;
 
-  renderComments(data);
+function loadMoreComments () {
+  startComment += NUMBER_OF_LOADING_COMMENTS;
+  finalComment += NUMBER_OF_LOADING_COMMENTS;
+  shownComments.textContent = `${finalComment} из ${commentsNumber.textContent} комментариев`;
+
+  comments
+    .slice(startComment, finalComment)
+    .forEach(({avatar, message, name}) => fillCardCommentsData ({avatar, message, name}));
+
+  commentContainer.appendChild(listOfFullPhotoComments);
+
+  if (commentContainer.children.length >= comments.length) {
+    shownComments.textContent = `${comments.length} из ${commentsNumber.textContent} комментариев`;
+    moreCommentsButton.classList.add('hidden');
+  }
 }
 
 function renderComments (card) {
-
   if (card.comments.length <= NUMBER_OF_LOADING_COMMENTS) {
-    loadCommentsButton.classList.add('hidden');
+    shownComments.textContent = `${card.comments.length} из ${commentsNumber.textContent} комментариев`;
+    moreCommentsButton.classList.add('hidden');
   } else {
-    loadCommentsButton.classList.remove('hidden');
+    moreCommentsButton.classList.remove('hidden');
+    shownComments.textContent = `${NUMBER_OF_LOADING_COMMENTS} из ${commentsNumber.textContent} комментариев`;
   }
 
+  comments = card.comments;
+
   card.comments
-    .slice(0, commentCounter)
+    .slice(MIN_NUMBER_OF_LOADING_COMMENTS, NUMBER_OF_LOADING_COMMENTS)
     .forEach(({avatar, message, name}) => fillCardCommentsData ({avatar, message, name}));
 
   commentContainer.innerHTML = '';
   commentContainer.appendChild(listOfFullPhotoComments);
 }
-
 
 function fillCardCommentsData ({avatar, message, name}) {
   const photoComment = commentTemplate.cloneNode(true);
@@ -52,7 +65,6 @@ function fillCardCommentsData ({avatar, message, name}) {
 }
 
 function fillCardData (evt, card) {
-
   if (evt.target.src.includes(card.url)) {
     photoCaption.textContent = card.description;
     commentsNumber.textContent = card.comments.length;
@@ -67,8 +79,8 @@ function openPhotoPopup (evt, data) {
   document.body.classList.add('modal-open');
 
   closeFullPhotoButton.addEventListener('click', closePhotoPopup);
-  document.addEventListener('keydown', closePhotoPopupOnEsc);
-  loadCommentsButton.addEventListener('click', () => loadMoreComments(data));
+  document.addEventListener('keydown', escDownPhotoPopupHandler);
+  moreCommentsButton.addEventListener('click', loadMoreComments);
 
   fullSizePhoto.src = evt.target.src;
   fullSizePhoto.alt = evt.target.alt;
@@ -81,21 +93,22 @@ function closePhotoPopup () {
   document.body.classList.remove('modal-open');
 
   closeFullPhotoButton.removeEventListener('click', closePhotoPopup);
-  document.removeEventListener('keydown', closePhotoPopupOnEsc);
-  loadCommentsButton.removeEventListener('click', loadMoreComments);
-  shownComments.textContent = `${NUMBER_OF_LOADING_COMMENTS} из ${commentsNumber.textContent} комментариев`;
-  commentCounter = NUMBER_OF_LOADING_COMMENTS;
+  document.removeEventListener('keydown', escDownPhotoPopupHandler);
+  moreCommentsButton.removeEventListener('click', loadMoreComments);
+
+  startComment = MIN_NUMBER_OF_LOADING_COMMENTS;
+  finalComment = NUMBER_OF_LOADING_COMMENTS;
 }
 
-function closePhotoPopupOnEsc (evt) {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
+function escDownPhotoPopupHandler (evt) {
+  if (evt.key !== 'Escape') {
+    return;
   }
 
   closePhotoPopup();
 }
 
-function openFullsizePhoto (previewsContainer, data) {
+function addPreviewClickHandler (previewsContainer, data) {
   function onPreviewClick (evt) {
     if (evt.target.matches(pictureClass)) {
       openPhotoPopup(evt, data);
@@ -104,4 +117,4 @@ function openFullsizePhoto (previewsContainer, data) {
   previewsContainer.addEventListener('click', onPreviewClick);
 }
 
-export { openFullsizePhoto };
+export { addPreviewClickHandler };

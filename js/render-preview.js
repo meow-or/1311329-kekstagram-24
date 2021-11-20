@@ -1,7 +1,7 @@
-import { openFullsizePhoto } from './render-fullsize-image.js';
+import { addPreviewClickHandler } from './render-fullsize-image.js';
 
-const CARDS_COUNT = 25;
-const startOfCount = CARDS_COUNT - 10;
+const NUMBER_OF_RANDOM_CARDS = 10;
+const START_OF_COUNT = 0;
 
 const previewTemplate = document.querySelector('#picture').content
   .querySelector('.picture');
@@ -24,14 +24,13 @@ function addPhotoDescription ({url, likes, comments}) {
   listOfPreviewsFragment.appendChild(photoDescription);
 }
 
-
 function renderCards (cards) {
   cards.forEach(({url, likes, comments}) => addPhotoDescription({url, likes, comments}));
 
   clearPictureContainer();
   previewsContainer.appendChild(listOfPreviewsFragment);
 
-  openFullsizePhoto(previewsContainer, cards);
+  addPreviewClickHandler(previewsContainer, cards);
 }
 
 function getRandomCard () {
@@ -55,26 +54,25 @@ function renderRandomCards (cards) {
   cards
     .slice()
     .sort(getRandomCard)
-    .slice(startOfCount, CARDS_COUNT)
+    .slice(START_OF_COUNT, NUMBER_OF_RANDOM_CARDS)
     .forEach(({url, likes, comments}) => addPhotoDescription({url, likes, comments}));
 
   clearPictureContainer();
   previewsContainer.appendChild(listOfPreviewsFragment);
 
-  openFullsizePhoto(previewsContainer, cards);
+  addPreviewClickHandler(previewsContainer, cards);
 }
 
 function renderDiscussedCards (cards) {
   cards
     .slice()
     .sort(compareCommentsNumber)
-    .slice(0, CARDS_COUNT)
     .forEach(({url, likes, comments}) => addPhotoDescription({url, likes, comments}));
 
   clearPictureContainer();
   previewsContainer.appendChild(listOfPreviewsFragment);
 
-  openFullsizePhoto(previewsContainer, cards);
+  addPreviewClickHandler(previewsContainer, cards);
 }
 
 export { previewsContainer, previewTemplate, renderCards, renderRandomCards, renderDiscussedCards };
