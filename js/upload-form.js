@@ -1,4 +1,4 @@
-import { showSuccess, showError} from './utils.js';
+import { showSuccess, showError } from './utils.js';
 import { sendData } from './api.js';
 
 const MAX_COMMENT_LENGTH = 140;
@@ -27,9 +27,9 @@ const effectLevelFieldset = document.querySelector('.effect-level');
 const imgFiltersForm = document.querySelector('.img-filters__form');
 const filterButtons = imgFiltersForm.querySelectorAll('.img-filters__button');
 const activeFilterButtonClass = 'img-filters__button--active';
-const defaultFilterButton = imgFiltersForm.querySelector('#filter-default');
-const randomFilterButton = imgFiltersForm.querySelector('#filter-random');
-const discussedFilterButton = imgFiltersForm.querySelector('#filter-discussed');
+const defaultFilterClass = '#filter-default';
+const randomFilterClass = '#filter-random';
+const discussedFilterClass = '#filter-discussed';
 const slider = noUiSlider.create(effectLevelSlider, {
   start: STARTING_POSITION_OF_SLIDER,
   connect: [true, false],
@@ -294,33 +294,52 @@ function closeFormOnError () {
   showError();
 }
 
-function toggleActiveFilter (evt) {
+function deleteActiveFilterButtonClass () {
   filterButtons.forEach((button) => {
     button.classList.remove(activeFilterButtonClass);
   });
-  evt.target.classList.toggle(activeFilterButtonClass);
+}
+const DEBOUNCE_DELAY = 500;
+let timeout;
+
+function setRenderCallback (defaultCallback, randomCallback, discussedCallback) {
+
+  function filterButtonClickHandler (evt) {
+    if (evt.target.closest(defaultFilterClass)) {
+      deleteActiveFilterButtonClass();
+      evt.target.closest(defaultFilterClass).classList.add(activeFilterButtonClass);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setDefaultFilter(defaultCallback), DEBOUNCE_DELAY);
+
+    } else if (evt.target.closest(randomFilterClass)) {
+      deleteActiveFilterButtonClass();
+      evt.target.closest(randomFilterClass).classList.add(activeFilterButtonClass);
+      clearTimeout(timeout);
+      timeout = setTimeout(() =>  setRandomFilter(randomCallback), DEBOUNCE_DELAY);
+
+    } else if (evt.target.closest(discussedFilterClass)) {
+      deleteActiveFilterButtonClass();
+      evt.target.closest(discussedFilterClass).classList.add(activeFilterButtonClass);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setDiscussedFilter(discussedCallback), DEBOUNCE_DELAY);
+    }
+  }
+
+  function setDefaultFilter (cb) {
+    cb();
+  }
+
+  function setRandomFilter (cb) {
+    cb();
+  }
+
+  function setDiscussedFilter (cb) {
+    cb();
+  }
+
+  imgFiltersForm.addEventListener('click', filterButtonClickHandler);
 }
 
-function setDefaultFilter (cb) {
-  defaultFilterButton.addEventListener('click', (evt) => {
-    toggleActiveFilter(evt);
-    cb();
-  });
-}
-
-function setRandomFilter (cb) {
-  randomFilterButton.addEventListener('click', (evt) => {
-    toggleActiveFilter(evt);
-    cb();
-  });
-}
-
-function setDiscussedFilter (cb) {
-  discussedFilterButton.addEventListener('click', (evt) => {
-    toggleActiveFilter(evt);
-    cb();
-  });
-}
 
 function setUploadFormSubmit (onSuccess) {
   form.addEventListener('submit', (evt) => {
@@ -336,4 +355,4 @@ function setUploadFormSubmit (onSuccess) {
 
 setUploadFormSubmit(closeFormOnSuccess);
 
-export {setDefaultFilter, setRandomFilter, setDiscussedFilter};
+export { setRenderCallback };
